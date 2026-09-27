@@ -1,0 +1,49 @@
+import { useEffect } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
+import { BookingProvider } from './lib/BookingContext'
+import Navbar from './components/Navbar'
+import MobileActionBar from './components/MobileActionBar'
+import Footer from './components/Footer'
+import Home from './pages/Home'
+import Book from './pages/Book'
+import Checkout from './pages/Checkout'
+import Confirmation from './pages/Confirmation'
+import NotFound from './pages/NotFound'
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => { window.scrollTo(0, 0) }, [pathname])
+  return null
+}
+
+const FLOW_ROUTES = ['/book', '/checkout', '/confirmation']
+
+export default function App() {
+  const { pathname } = useLocation()
+  const inFlow = FLOW_ROUTES.includes(pathname)
+
+  return (
+    <BookingProvider>
+      <ScrollToTop />
+      <Navbar compact={inFlow} />
+      <main className={inFlow ? 'main-flow' : ''}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/book" element={<Book />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/confirmation" element={<Confirmation />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
+      {!inFlow && <MobileActionBar />}
+      <Footer slim={inFlow} />
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: { background: '#16181B', color: '#F3F4F3', fontFamily: 'Figtree, sans-serif', fontSize: '14px', borderRadius: '10px' }
+        }}
+      />
+    </BookingProvider>
+  )
+}
