@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { loadStripe } from '@stripe/stripe-js'
-import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
+import { Elements, ExpressCheckoutElement, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import toast from 'react-hot-toast'
 import { ArrowLeft, Lock, Tag, BadgePercent, Loader2, Check, X } from 'lucide-react'
 import { useBooking } from '../lib/BookingContext'
@@ -188,10 +188,16 @@ function PayForm({ total, email, coupon, onPaid }) {
   const stripe = useStripe()
   const elements = useElements()
   const [busy, setBusy] = useState(false)
+  // Express buttons (Apple Pay / Link): 'loading' | 'available' | 'none'
+  const [express, setExpress] = useState('loading')
+  // Card form stays tucked away unless the customer asks for it or no express method is available
+  const [showCard, setShowCard] = useState(false)
+  const [cardReady, setCardReady] = useState(false)
+  const [loadError, setLoadError] = useState(null)
 
-  const submit = async (e) => {
-    e.preventDefault()
-    if (!stripe || !elements) return
+  // Shared by the express buttons and the card form. Returns true when paid.
+  const pay = async () => {
+    if (!stripe || !elements) return false
     setBusy(true)
     // Remember the coupon in case the payment method redirects away and back
     try { sessionStorage.setItem('highend_coupon', coupon || '') } catch { /* ignore */ }
@@ -206,22 +212,81 @@ function PayForm({ total, email, coupon, onPaid }) {
     if (error) {
       toast.error(error.message || 'Payment failed')
       setBusy(false)
-      return
+      return false
     }
     if (paymentIntent && ['succeeded', 'processing', 'requires_capture'].includes(paymentIntent.status)) {
       await onPaid(paymentIntent.id)
-    } else {
-      toast.error('Payment was not completed')
-      setBusy(false)
+      return true
     }
+    toast.error('Payment was not completed')
+    setBusy(false)
+    return false
   }
 
+  const submitCard = async (e) => {
+    e.preventDefault()
+    await pay()
+  }
+
+  const noExpress = () => { setExpress('none'); setShowCard(true) }
+
   return (
-    <form onSubmit={submit} className="pay-form">
-      <PaymentElement options={{ layout: 'tabs' }} />
-      <button className="btn btn-graphite btn-lg pay-btn" disabled={!stripe || busy}>
-        {busy ? <><Loader2 size={18} className="spin" /> Processing…</> : <><Lock size={16} /> Pay ${total}</>}
-      </button>
-    </form>
+    <div className="pay-form">
+      {express === 'loading' && (
+        <p className="pay-loading"><Loader2 size={17} className="spin" /> Loading secure payment…</p>
+      )}
+
+      <div className="express-wrap" hidden={express === 'none'}>
+        <ExpressCheckoutElement
+          options={{
+            buttonHeight: 50,
+            buttonType: { applePay: 'book' },
+            paymentMethods: { applePay: 'auto', link: 'auto', googlePay: 'never', amazonPay: 'never', paypal: 'never', klarna: 'never' }
+          }}
+          onReady={({ availablePaymentMethods }) => {
+            if (availablePaymentMethods) setExpress('available')
+            else noExpress()
+          }}
+          onLoadError={(e) => {
+            console.error('Stripe Express Checkout failed to load', e?.error)
+            noExpress()
+          }}
+          onConfirm={async (event) => {
+            const ok = await pay()
+            if (!ok) event.paymentFailed?.({ reason: 'fail' })
+          }}
+        />
+      </div>
+
+      {express === 'available' && !showCard && (
+        <button type="button" className="pay-card-toggle" onClick={() => setShowCard(true)} disabled={busy}>
+          Pay with card instead
+        </button>
+      )}
+
+      {showCard && (
+        <form onSubmit={submitCard} className="card-form">
+          {express === 'available' && <div className="pay-or"><span>or pay with card</span></div>}
+          {loadError && (
+            <p className="pay-note">We couldn't load the card form ({loadError}). You can still reserve and pay later.</p>
+          )}
+          {!cardReady && !loadError && (
+            <p className="pay-loading"><Loader2 size={17} className="spin" /> Loading card form…</p>
+          )}
+          <PaymentElement
+            options={{ layout: 'tabs', wallets: { applePay: 'never', googlePay: 'never' } }}
+            onReady={() => setCardReady(true)}
+            onLoadError={(e) => {
+              // Surface Stripe's reason instead of leaving an empty box
+              console.error('Stripe Payment Element failed to load', e?.error)
+              setLoadError(e?.error?.message || 'unknown error')
+            }}
+          />
+          <button className="btn btn-graphite btn-lg pay-btn" disabled={!stripe || busy || !cardReady}>
+            {busy ? <><Loader2 size={18} className="spin" /> Processing…</> : <><Lock size={16} /> Pay ${total}</>}
+          </button>
+        </form>
+      )}
+    </div>
   )
 }

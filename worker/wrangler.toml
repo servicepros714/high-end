@@ -1,0 +1,21 @@
+# High End Car Detailing — Cloudflare Worker config
+# Account: detailingmarketers2 (5df257c170669d41c20367d89e7963d1)
+# Deploy:  npx wrangler deploy --config worker/wrangler.toml
+# Secrets: npx wrangler secret put STRIPE_SECRET_KEY --config worker/wrangler.toml
+#          npx wrangler secret put GHL_WEBHOOK_URL   --config worker/wrangler.toml   (GoHighLevel inbound webhook)
+#          npx wrangler secret put STRIPE_WEBHOOK_SECRET --config worker/wrangler.toml   (whsec_ for /api/stripe-webhook)
+
+name = "highend-detailing-worker"
+main = "highend-detailing-worker.js"
+compatibility_date = "2026-10-01"
+account_id = "5df257c170669d41c20367d89e7963d1"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "detailing-bookings-detailingmarketers2"
+database_id = "4143248b-0d9b-4c96-b078-61772ba3597e"
+
+# Plain-text vars. Secrets (STRIPE_SECRET_KEY, GHL_WEBHOOK_URL, ADMIN_TOKEN) are set with `wrangler secret put`, never here.
+[vars]
+# Browsers on any other origin are refused by CORS. localhost:5173 is kept so `npm run dev` can hit the live API.
+ALLOWED_ORIGIN = "https://highendcardetailing.site,https://www.highendcardetailing.site,https://highend-car-detailing-v2.pages.dev,http://localhost:5173"

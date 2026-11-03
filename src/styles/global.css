@@ -748,3 +748,11 @@ a.footer-plate:hover { border-color: rgba(255, 255, 255, .3); }
   .reveal { opacity: 1; transform: none; filter: none; }
   html { scroll-behavior: auto; }
 }
+/* Express checkout (Apple Pay / Link) + tucked-away card form */
+.express-wrap { margin-top: 6px; }
+.express-wrap[hidden] { display: none; }
+.pay-card-toggle { display: block; margin: 16px auto 0; border: 0; background: none; color: var(--slate); font-weight: 600; font-size: 14.5px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.pay-card-toggle:hover { color: var(--ink); }
+.card-form { margin-top: 6px; }
+.pay-or { display: flex; align-items: center; gap: 12px; margin: 20px 0 16px; color: var(--slate); font-size: 13px; letter-spacing: .04em; text-transform: uppercase; }
+.pay-or::before, .pay-or::after { content: ''; flex: 1; height: 1px; background: #D5D8DA; }

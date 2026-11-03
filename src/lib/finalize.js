@@ -24,7 +24,8 @@ export async function finalizeBooking(draft, { paid, coupon, paymentIntentId }) 
     vehicle: draft.info.vehicle.trim(),
     address: draft.info.address.trim(),
     notes: noteParts.join(' · '),
-    payment_status: paid ? 'Paid' : 'Pay Later'
+    payment_status: paid ? 'Paid' : 'Pay Later',
+    payment_intent_id: paymentIntentId || null   // lets the Stripe webhook find this booking
   }
   const res = await createBooking(booking)
   return { ...booking, id: res.id, stored: res.stored, total }
