@@ -11,8 +11,8 @@ const ARCHES = [
 const CREDS = [
   { icon: Truck, title: 'Fully mobile', text: 'We come to your driveway' },
   { icon: CalendarDays, title: '7 days a week', text: 'By appointment, 7 AM – 7 PM' },
-  { icon: Droplets, title: 'Hand-finished', text: 'Microfiber & pro-grade products' },
-  { icon: ShieldCheck, title: 'Flat pricing', text: 'No surprise upcharges' }
+  { icon: Droplets, title: 'Own water & power', text: 'Nothing needed from you' },
+  { icon: ShieldCheck, title: 'Flat pricing', text: 'Same price, any vehicle size' }
 ]
 
 export default function Hero() {
@@ -20,17 +20,17 @@ export default function Hero() {
     <section id="hero" className="hero">
       <div className="hero-brush" aria-hidden="true" />
       <div className="container hero-copy">
-        <p className="eyebrow hero-eyebrow">
-          <span className="spark" aria-hidden="true">✦</span> Mobile Detailing · {BUSINESS.city}
-        </p>
-        <h1 className="hero-title">
+        <h1 className="eyebrow hero-eyebrow">
+          <span className="spark" aria-hidden="true">✦</span> Mobile car detailing in {BUSINESS.city}, CA
+        </h1>
+        <p className="hero-title">
           Showroom <span className="metal-text">finish.</span>
           <br />
           Delivered to your driveway.
-        </h1>
+        </p>
         <p className="hero-sub">
           Deep interior restoration and hand-washed exteriors for San Juan Capistrano drivers —
-          flat pricing from $150, booked online in under a minute.
+          flat pricing from $150, booked online.
         </p>
         <div className="hero-ctas">
           <Link to="/book" className="btn btn-graphite btn-lg">

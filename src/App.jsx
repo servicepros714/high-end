@@ -10,6 +10,9 @@ import Book from './pages/Book'
 import Checkout from './pages/Checkout'
 import Confirmation from './pages/Confirmation'
 import NotFound from './pages/NotFound'
+import Landing from './pages/Landing'
+import Seo from './components/Seo'
+import { LANDING_PAGES } from './lib/pages'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -25,11 +28,15 @@ export default function App() {
 
   return (
     <BookingProvider>
+      <Seo />
       <ScrollToTop />
       <Navbar compact={inFlow} />
       <main className={inFlow ? 'main-flow' : ''}>
         <Routes>
           <Route path="/" element={<Home />} />
+          {LANDING_PAGES.map((p) => (
+            <Route key={p.path} path={p.path} element={<Landing key={p.path} page={p} />} />
+          ))}
           <Route path="/book" element={<Book />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/confirmation" element={<Confirmation />} />

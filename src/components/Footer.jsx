@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
-import { Phone, MapPin, Clock, CalendarCheck } from 'lucide-react'
-import { BUSINESS } from '../data/business'
+import { Phone, MapPin, Clock, CalendarCheck, Star } from 'lucide-react'
+import { BUSINESS, GOOGLE_PROFILE_URL } from '../data/business'
+import { SERVICE_PAGES, CITY_PAGES, HOME_CITY } from '../lib/pages'
 
 export default function Footer({ slim }) {
   const year = new Date().getFullYear()
@@ -47,6 +48,21 @@ export default function Footer({ slim }) {
           <a href="/#faq">FAQ</a>
           <Link to="/book" className="footer-book"><CalendarCheck size={15} /> Book Online</Link>
         </nav>
+
+        <div className="footer-rows">
+          <nav aria-label="Services">
+            <span>Services</span>
+            {SERVICE_PAGES.map((p) => <Link key={p.path} to={p.path}>{p.nav}</Link>)}
+          </nav>
+          <nav aria-label="Areas">
+            <span>Areas</span>
+            <Link to="/">{HOME_CITY}</Link>
+            {CITY_PAGES.map((p) => <Link key={p.path} to={p.path}>{p.city}</Link>)}
+          </nav>
+          <a className="footer-google" href={GOOGLE_PROFILE_URL} target="_blank" rel="noopener noreferrer">
+            <Star size={15} /> Find us on Google
+          </a>
+        </div>
 
         <div className="footer-base">
           <span>© {year} {BUSINESS.fullName}. All rights reserved.</span>

@@ -11,6 +11,14 @@ export const BUSINESS = {
   idPrefix: 'HECD-'
 }
 
+// Canonical site address (no www). Every canonical tag, sitemap URL and schema URL uses this.
+export const SITE_URL = (import.meta.env.VITE_SITE_URL || 'https://highendcardetailing.site').replace(/\/$/, '')
+
+// Google Business Profile. GOOGLE_PROFILE_URL is the share link people click;
+// GOOGLE_PROFILE_ID is the stable profile URL used in schema (sameAs).
+export const GOOGLE_PROFILE_URL = 'https://share.google/jbfJW7wkTPawtb8wD'
+export const GOOGLE_PROFILE_ID = 'https://www.google.com/search?kgmid=/g/11ytfjz0mf'
+
 export const PACKAGES = [
   {
     id: 'basic',
@@ -72,6 +80,19 @@ export const SERVICE_AREA = [
   'San Juan Capistrano', 'Dana Point', 'Capistrano Beach', 'San Clemente',
   'Laguna Niguel', 'Mission Viejo', 'Ladera Ranch', 'Rancho Mission Viejo',
   'Laguna Hills', 'Laguna Beach', 'Aliso Viejo', 'Monarch Beach'
+]
+
+// Home page FAQ. Also used for the FAQPage schema on the home page, so only list
+// questions that are shown on the page, and only confirmed facts.
+export const FAQS = [
+  { q: 'Do I need to provide water or power?', a: 'No. We bring our own water, power, equipment and products. We just need room to work around the car.' },
+  { q: 'How long does a detail take?', a: 'A Basic Detail usually takes about 1.5–2 hours. A Premium Detail with full shampoo and extraction runs about 3–4 hours. Adding an Exterior Wash adds roughly 45 minutes.' },
+  { q: 'Can I book only the Exterior Wash?', a: 'No. The Exterior Wash is a $50 add-on to the Basic or Premium Detail. Add it in step 2 of booking.' },
+  { q: 'Do SUVs and trucks cost more?', a: 'No. Sedans, SUVs, trucks and vans all pay the same package price.' },
+  { q: 'When do I pay?', a: 'Your choice. Prepay online at checkout and save $15 with code PREPAY, or choose pay later and settle up after the job.' },
+  { q: 'How soon can I book?', a: 'Appointments start every 30 minutes from 7 AM to 7 PM, seven days a week. Same-day bookings need at least 4 hours\u2019 notice. For anything sooner, call us.' },
+  { q: 'What if I need to reschedule?', a: 'Call or text us at (949) 304-5373 and we\u2019ll move your appointment to another open time.' },
+  { q: 'Which areas do you serve?', a: 'San Juan Capistrano and South Orange County, including Dana Point, San Clemente, Laguna Niguel, Mission Viejo and Ladera Ranch. Enter your address when you book.' }
 ]
 
 export function serviceLabel(pkgId, addExterior) {

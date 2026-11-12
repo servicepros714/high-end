@@ -116,7 +116,21 @@ git push -u origin main
 1. In Cloudflare: **Workers & Pages → Create → Pages → Direct Upload** → create project `highend-car-detailing-v2` (already created on 2026-10-23; first deploy done via `npx wrangler pages deploy dist --project-name=highend-car-detailing-v2 --branch=main`), or let the first Action run create it.
 2. GitHub repo → **Settings → Secrets and variables → Actions** → add `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` (and optionally `VITE_STRIPE_PUBLISHABLE_KEY`).
 3. Every push to `main` builds and deploys via `.github/workflows/deploy.yml`.
-4. `public/_redirects` handles SPA routes (`/book`, `/checkout`, `/confirmation`).
+4. There is no `public/_redirects`: every page is a real HTML file (see SEO below), and
+   unknown URLs get `dist/404.html` with a 404 status.
+
+## SEO
+
+- `npm run build` = `vite build` + an SSR build of `src/entry-server.jsx` + `scripts/prerender.js`.
+  The prerender writes one static HTML file per route (home, landing pages, `/404`; the booking
+  pages get head tags only), writes `sitemap.xml`, and **fails the build** if a title is over
+  60 characters, a description over 160, or two pages share a title.
+- `src/lib/seo.js`: titles, descriptions, canonical (non-www), Open Graph and JSON-LD schema
+  (AutomotiveBusiness, FAQ, Service, breadcrumbs). `<Seo />` swaps them on client navigation.
+- `src/lib/pages.js`: the service and city landing pages (data). `src/pages/Landing.jsx` renders them.
+  Only confirmed facts go in there. The Exterior Wash is an add-on, never sold alone.
+- `src/data/business.js`: `SITE_URL`, Google profile links and `FAQS` (home FAQ + schema).
+- `public/robots.txt` points to the sitemap; `public/_headers` keeps `*.pages.dev` out of search.
 
 ## Booking flow
 

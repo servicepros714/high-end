@@ -1,14 +1,15 @@
 import { Link } from 'react-router-dom'
 import { Phone, CalendarCheck, MapPin, Plus, Minus } from 'lucide-react'
 import { useState } from 'react'
-import { BUSINESS, SERVICE_AREA } from '../data/business'
+import { BUSINESS, SERVICE_AREA, FAQS } from '../data/business'
+import { CITY_PAGES } from '../lib/pages'
 
 /* ---------- How it works: chrome-rail timeline ---------- */
 const STEPS = [
-  { n: '01', title: 'Book online', text: 'Pick your detail, add an exterior wash if you like, and choose any open hour from 7 AM to 7 PM.' },
-  { n: '02', title: 'We pull up', text: 'Your detailer arrives at your home, office or garage with the equipment and products needed for the job.' },
+  { n: '01', title: 'Book online', text: 'Pick your detail, add an exterior wash if you like, and choose any open time from 7 AM to 7 PM.' },
+  { n: '02', title: 'We pull up', text: 'Your detailer arrives at your home, office or garage with our own water, power, equipment and products.' },
   { n: '03', title: 'The detail', text: 'Vacuuming, extraction, shampoo and wipe-downs done by hand — you carry on with your day.' },
-  { n: '04', title: 'Walkthrough', text: 'We walk the car with you before we leave. Pay online in advance or after the job.' }
+  { n: '04', title: 'All done', text: 'Check out the finished car. Pay online in advance or after the job.' }
 ]
 
 export function Process() {
@@ -40,7 +41,7 @@ const LOOKS = [
   { src: '/images/taillight.webp', cap: 'Contact-safe hand wash', pos: '50% 45%' },
   { src: '/images/door-after.webp', cap: 'Interior trim reset', pos: '70% 50%' },
   { src: '/images/mobile-rig.webp', cap: 'Mobile rig on site', pos: '40% 50%' },
-  { src: '/images/seat-after.webp', cap: 'Leather restoration', pos: '50% 55%' },
+  { src: '/images/seat-after.webp', cap: 'Seat cleaning', pos: '50% 55%' },
   { src: '/images/foam-audi.webp', cap: 'Driveway exterior wash', pos: '30% 60%' }
 ]
 
@@ -81,7 +82,7 @@ export function CtaBand() {
       <div className="container cta-band-inner reveal">
         <p className="eyebrow eyebrow--light">Open 7 days · by appointment</p>
         <h2 className="h2 h2--light">Your car, detailed <span className="metal-text">where it's parked.</span></h2>
-        <p className="cta-band-sub">Book online in under a minute — prepay and save $15, or pay after the job.</p>
+        <p className="cta-band-sub">Book online — prepay and save $15, or pay after the job.</p>
         <div className="cta-band-actions">
           <Link to="/book" className="btn btn-chrome btn-lg"><CalendarCheck size={19} /> Book Online</Link>
           <a href={BUSINESS.phoneHref} className="btn btn-outline-light btn-lg"><Phone size={18} /> Call {BUSINESS.phone}</a>
@@ -99,11 +100,16 @@ export function ServiceArea() {
         <div className="area-copy reveal">
           <p className="eyebrow">Service Area</p>
           <h2 className="h2">Based in San Juan Capistrano. <span className="muted">Serving South Orange County.</span></h2>
-          <p className="lede">We bring the detail to you anywhere in and around San Juan Capistrano. Don't see your city? Call — we can usually make it work.</p>
+          <p className="lede">We bring the detail to you anywhere in and around San Juan Capistrano. Don't see your city? Call and ask.</p>
           <ul className="area-chips">
-            {SERVICE_AREA.map((c) => (
-              <li key={c}><MapPin size={13} /> {c}</li>
-            ))}
+            {SERVICE_AREA.map((c) => {
+              const page = CITY_PAGES.find((p) => p.city === c)
+              return (
+                <li key={c} className={page ? 'has-link' : undefined}>
+                  <MapPin size={13} /> {page ? <Link to={page.path}>{c}</Link> : c}
+                </li>
+              )
+            })}
           </ul>
         </div>
         <div className="area-map reveal">
@@ -124,31 +130,25 @@ export function ServiceArea() {
   )
 }
 
-/* ---------- FAQ ---------- */
-const FAQS = [
-  { q: 'Do I need to provide water or power?', a: 'Just let us know when you book if your location has limited access to water or an outlet (like an apartment garage). We\'ll confirm the setup with you before your appointment.' },
-  { q: 'How long does a detail take?', a: 'A Basic Detail usually takes about 1.5–2 hours. A Premium Detail with full shampoo and extraction runs about 3–4 hours. Adding an Exterior Wash adds roughly 45 minutes.' },
-  { q: 'Is the Exterior Wash available on its own?', a: 'The Exterior Wash is an add-on for $50 that pairs with either interior package. You can add it in step 2 of booking.' },
-  { q: 'When do I pay?', a: 'Your choice. Prepay online with card, Apple Pay or Google Pay and save $15 with code PREPAY — or choose "pay later" and settle up after the job.' },
-  { q: 'How soon can I book?', a: 'Appointments run every hour from 7 AM to 7 PM, seven days a week. The earliest online slot is four hours from now — for anything sooner, give us a call.' },
-  { q: 'What if I need to reschedule?', a: 'Call or text us at (949) 304-5373 and we\'ll move your appointment to another open time.' }
-]
+/* ---------- FAQ ----------
+   Questions live in data/business.js (FAQS) and feed the FAQ schema too.
+   Landing pages pass their own list and title. */
 
-export function Faq() {
+export function Faq({ faqs = FAQS, title = <>Good questions, <span className="muted">straight answers.</span></> }) {
   const [open, setOpen] = useState(0)
   return (
     <section id="faq" className="section faq">
       <div className="container faq-grid">
         <div className="faq-side reveal">
           <p className="eyebrow">FAQ</p>
-          <h2 className="h2">Good questions, <span className="muted">straight answers.</span></h2>
+          <h2 className="h2">{title}</h2>
           <div className="faq-call">
             <p>Still wondering about something?</p>
             <a href={BUSINESS.phoneHref} className="btn btn-graphite"><Phone size={17} /> {BUSINESS.phone}</a>
           </div>
         </div>
         <div className="faq-list reveal">
-          {FAQS.map((f, i) => {
+          {faqs.map((f, i) => {
             const isOpen = open === i
             return (
               <div key={f.q} className={`faq-item ${isOpen ? 'is-open' : ''}`}>
