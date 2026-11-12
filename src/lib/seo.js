@@ -21,7 +21,7 @@ function businessNode() {
     logo: abs('/images/logo.png'),
     // Cheapest bookable visit (Basic) to the most complete one (Premium + wash). Never the $50 add-on alone.
     priceRange: `$${basic.price}–$${premium.price + EXTERIOR.price}`,
-    address: { '@type': 'PostalAddress', addressLocality: HOME_CITY, addressRegion: 'CA', addressCountry: 'US' },
+    address: { '@type': 'PostalAddress', streetAddress: '26451 Camino De Vista', addressLocality: HOME_CITY, addressRegion: 'CA', postalCode: '92675', addressCountry: 'US' },
     areaServed: [HOME_CITY, ...CITY_PAGES.map((c) => c.city)].map((name) => ({ '@type': 'City', name: `${name}, CA` })),
     openingHoursSpecification: [{
       '@type': 'OpeningHoursSpecification',

@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 import Hero from '../components/Hero'
 import ServiceMenu from '../components/ServiceMenu'
 import BeforeAfter from '../components/BeforeAfter'
-import { Process, Lookbook, CtaBand, ServiceArea, Faq } from '../components/Sections'
+import { Process, Lookbook, Reviews, CtaBand, ServiceArea, Faq } from '../components/Sections'
 import useReveal from '../lib/useReveal'
 
 export default function Home() {
@@ -26,6 +26,7 @@ export default function Home() {
       <BeforeAfter />
       <Process />
       <Lookbook />
+      <Reviews />
       <CtaBand />
       <ServiceArea />
       <Faq />

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Phone, CalendarCheck, MapPin, Plus, Minus } from 'lucide-react'
 import { useState } from 'react'
-import { BUSINESS, SERVICE_AREA, FAQS } from '../data/business'
+import { BUSINESS, SERVICE_AREA, FAQS, REVIEWS, GOOGLE_PROFILE_URL } from '../data/business'
 import { CITY_PAGES } from '../lib/pages'
 
 /* ---------- How it works: chrome-rail timeline ---------- */
@@ -68,6 +68,37 @@ export function Lookbook() {
               ))}
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ---------- Reviews: real Google reviews (data/business.js REVIEWS) ---------- */
+export function Reviews() {
+  if (!REVIEWS.length) return null
+  return (
+    <section id="reviews" className="section reviews">
+      <div className="container">
+        <div className="reviews-head reveal">
+          <p className="eyebrow">Google Reviews</p>
+          <h2 className="h2">Straight from <span className="muted">our customers.</span></h2>
+        </div>
+        <div className="reviews-grid">
+          {REVIEWS.map((r) => (
+            <figure key={r.name} className="review reveal">
+              <blockquote>&ldquo;{r.text}&rdquo;</blockquote>
+              <figcaption>
+                <strong>{r.name}</strong>
+                <span>Google review</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+        <div className="reviews-more reveal">
+          <a className="btn btn-outline" href={GOOGLE_PROFILE_URL} target="_blank" rel="noopener noreferrer">
+            Read all our reviews on Google
+          </a>
         </div>
       </div>
     </section>

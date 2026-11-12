@@ -109,3 +109,17 @@ h1.hero-eyebrow { font-weight: 400; line-height: 1.6; }
   .lp-facts li { font-size: 13px; }
   .lp-card .svc-name { padding-right: 0; margin-top: 26px; }
 }
+
+/* Reviews (home): masonry columns so short and long reviews pack without gaps */
+.reviews { background: var(--white); }
+.reviews-head { margin-bottom: 48px; }
+.reviews-grid { columns: 3 280px; column-gap: 20px; }
+.review {
+  break-inside: avoid; margin: 0 0 20px; padding: 26px 24px;
+  background: var(--pearl); border: 1px solid var(--line); border-radius: 18px;
+}
+.review blockquote { margin: 0; font-size: 15.5px; line-height: 1.6; color: var(--ink); }
+.review figcaption { display: grid; gap: 2px; margin-top: 16px; }
+.review figcaption strong { font-size: 14.5px; }
+.review figcaption span { font-family: var(--f-eyebrow); font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--steel); }
+.reviews-more { display: flex; justify-content: center; margin-top: 28px; }

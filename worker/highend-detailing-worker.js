@@ -44,6 +44,37 @@ for (const pkg of Object.values(PACKAGES)) {
   SERVICE_PRICES.set(`${pkg.name} + ${EXTERIOR.name}`, pkg.price + EXTERIOR.price)
 }
 
+// Same-day bookings need 4 hours' notice (California time); the booking page hides
+// earlier slots (src/lib/dates.js LEAD_HOURS). Saving allows 1 hour less, so a customer who
+// picked a slot at the edge of the window and took a while at checkout is not turned away.
+const TIME_ZONE = 'America/Los_Angeles'
+const SAVE_LEAD_MINUTES = 4 * 60 - 60
+
+function californiaNow() {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: TIME_ZONE, year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+  }).formatToParts(new Date())
+  const get = (t) => parts.find((p) => p.type === t).value
+  return { date: `${get('year')}-${get('month')}-${get('day')}`, minutes: Number(get('hour')) * 60 + Number(get('minute')) }
+}
+
+function timeToMinutes(label) {
+  const [t, period] = label.split(' ')
+  const [h, m] = t.split(':').map(Number)
+  return ((h % 12) + (period === 'PM' ? 12 : 0)) * 60 + m
+}
+
+// Error message when the date/time can't be booked any more, otherwise null
+function tooLate(date, time) {
+  const now = californiaNow()
+  if (date < now.date) return 'That date has already passed. Please choose another day.'
+  if (date === now.date && timeToMinutes(time) < now.minutes + SAVE_LEAD_MINUTES) {
+    return "Same-day bookings need at least 4 hours' notice. Please choose a later time or another day."
+  }
+  return null
+}
+
 // Every 30 minutes, 7:00 AM – 7:00 PM
 const VALID_TIMES = []
 for (let t = 7 * 60; t <= 19 * 60; t += 30) {
@@ -301,6 +332,13 @@ export default {
         booking.total = SERVICE_PRICES.get(booking.service)
         if (booking.payment_status === 'Paid') Object.assign(booking, await verifyPayment(env, booking))
         else booking.payment_intent_id = null
+
+        // Pay-later bookings must respect the notice window. A booking backed by a Stripe
+        // payment is never refused here: the customer has already paid.
+        if (booking.payment_status !== 'Paid' && !booking.payment_intent_id) {
+          const late = tooLate(booking.date, booking.time)
+          if (late) return json(env, { error: late }, 400)
+        }
         booking.notes = [`Total: $${booking.total}`, booking.notes.replace(/^Total:\s*\$?\d+(?:\.\d+)?\s*(?:·\s*)?/, '')].filter(Boolean).join(' · ')
 
         // One payment can only ever back one booking

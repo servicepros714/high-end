@@ -82,6 +82,22 @@ export const SERVICE_AREA = [
   'Laguna Hills', 'Laguna Beach', 'Aliso Viejo', 'Monarch Beach'
 ]
 
+// Real customer reviews only, copied word for word from the Google Business Profile
+// (newest first, first name + last initial; screen names as shown). Emoji left out.
+// To add one: { name: 'Maria G.', text: '...' }, then commit and push.
+export const REVIEWS = [
+  { name: 'Judy M.', text: 'Booked for an interior stain removal. They did a great job' },
+  { name: 'Ashley M.', text: 'Amazing service! Super nice and super helpful! Made sure that everything i needed was dealt with! Thank you again!' },
+  { name: 'David T.', text: 'great service very detailed highly recommended company deserves their five stars.' },
+  { name: 'L. B.', text: 'Came to them in desperate need and was in a rush, they took care of me no problem and the work was immaculate! Thanks again guys, definitely would recommend to anyone!' },
+  { name: 'Royukusan', text: 'Got a thorough cleaning and detailed and my car felt fresh like I bought off the lot again. Really great people that work here' },
+  { name: 'Andrew G.', text: 'the service and experience was high end. I love a clean car but hate doing it. friendly and fun staff' },
+  { name: 'Jay', text: 'Very understanding , Proffesional, and also extremely reliable 10/10 would recommend' },
+  { name: 'Haaris H.', text: 'Greater than I could have ever expected' },
+  { name: 'Luciana V.', text: 'Very satisfied with their services. Highly recommended!' },
+  { name: 'Jake F.', text: 'Great customer service and left everything fresh and clean' }
+]
+
 // Home page FAQ. Also used for the FAQPage schema on the home page, so only list
 // questions that are shown on the page, and only confirmed facts.
 export const FAQS = [
