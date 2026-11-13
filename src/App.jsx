@@ -16,7 +16,9 @@ import { LANDING_PAGES } from './lib/pages'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
-  useEffect(() => { window.scrollTo(0, 0) }, [pathname])
+  // 'instant': the page has smooth scrolling on, and a long smooth slide from the bottom
+  // of the previous page gets interrupted (it would stop around the FAQ).
+  useEffect(() => { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }) }, [pathname])
   return null
 }
 
